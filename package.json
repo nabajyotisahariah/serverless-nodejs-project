@@ -1,12 +1,16 @@
 {
   "name": "serverless-nodejs-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple serverless Node.js project",
+  "scripts": {
+    "dev": "nodemon --watch . --ext js,yml,json --exec serverless offline"
+  },
   "dependencies": {
     "express": "^4.19.2",
     "serverless-http": "^3.2.0"
   },
   "devDependencies": {
+    "nodemon": "^3.1.14",
     "serverless-offline": "^14.5.0"
   }
 }
