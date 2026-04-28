@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "A simple serverless Node.js project",
   "scripts": {
-    "dev": "nodemon --watch . --ext js,yml,json --exec serverless offline"
+    "dev": "nodemon --watch . --ext js,yml,json --exec serverless offline",
+    "deploy": "serverless deploy"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "express": "^4.19.2",
+    "mongoose": "^9.5.0",
     "serverless-http": "^3.2.0"
   },
   "devDependencies": {
