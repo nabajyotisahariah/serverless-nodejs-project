@@ -12,6 +12,9 @@ provider:
   # https://www.serverless.com/framework/docs/providers/aws/guide/domains
   # domain: api.example.com
 
+plugins:
+  - serverless-offline
+  
 functions:
   api:
     handler: handler.handler
