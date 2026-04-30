@@ -1,0 +1,12 @@
+What you want is S3 → Lambda trigger (event-driven) instead of calling your API manually with curl.
+
+Right now:
+    You upload via API Gateway → Lambda runs → resizes image
+
+You want:
+    Upload directly to S3 (upload/ folder) → Lambda auto-triggers → resizes image ✅
+
+✅ Architecture (Target Setup)
+    S3 (upload/)  ───►  Lambda (resize)  ───►  S3 (resized/)
+
+

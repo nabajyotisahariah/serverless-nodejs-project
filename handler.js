@@ -24,7 +24,7 @@ exports.s3Handler = async (event) => {
       .resize(400)
       .toBuffer();
 
-    const newKey = key.replace("upload/", "resized/");
+    const newKey = key.replace("upload/", "upload-resized/");
 
     await S3.putObject({
       Bucket: bucket,
