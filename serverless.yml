@@ -28,8 +28,9 @@ functions:
     handler: handler.handler
     events:
       - httpApi: "*"
+
   imageProcessor:
-    handler: handler.s3Handler
+    handler: lambda-s3.triggerCopy
     events:
       - s3:
           bucket: s3-image-lambda-demo
