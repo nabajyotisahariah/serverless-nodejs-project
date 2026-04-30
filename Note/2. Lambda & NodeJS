@@ -1,0 +1,457 @@
+Edited : 29th April 2026
+
+https://www.serverless.com/framework/docs/getting-started
+
+AWS Lambda 
+   Serverless compute service that lets you run code without provisioning or managing servers. You can use Lambda to run code for virtually any type of application or backend service. 
+   https://ap-south-1.console.aws.amazon.com/lambda/home?region=ap-south-1#/discover
+
+  - Install the Serverless Framework CLI if not already done: npm install -g serverless
+  - Log in to your Serverless account: serverless login
+  - If you have an access key, set it as an environment variable: export SERVERLESS_ACCESS_KEY=your_access_key_here
+  - Dashboard 
+	- https://ap-south-1.console.aws.amazon.com/lambda/home			[  -> Lambda apps]
+	- https://ap-south-1.console.aws.amazon.com/cloudformation/home		[  -> Infra templates]
+	- https://app.serverless.com/nabajyotiworkspace/services		[  -> NodeJS microservices]
+	
+
+  Moptra_IT@POC
+  $ npm install -g serverless  
+  added 44 packages in 11s
+
+  $ serverless --version
+  Serverless ϟ Framework 4.34.0
+
+  Genre SEVERLESS_ACCESS_KEY "https://app.serverless.com/nabajyotiworkspace/settings/accessKeys"
+  $  export SERVERLESS_ACCESS_KEY=AK8H7cvdKlQjsrLAIGoM3lSv9Ghtu1xbjesWxAgN852Uh 
+-------------------------------------------------------------------------------------------------------------
+As of version 4, the Serverless Framework automatically updates 
+   
+   serverless update 
+   OR 
+   set this environment variable:
+	SERVERLESS_FRAMEWORK_FORCE_UPDATE=true
+-------------------------------------------------------------------------------------------------------------
+Creating IAM Role for Lambda Function...
+     https://us-east-1.console.aws.amazon.com/iam/home?region=ap-south-1#/users
+
+     Users -> 
+     	Create User -> Set Permission  -> Review & Create
+
+	Access Key : NA
+	Secret Access Key : NA
+
+	Policy Name                   Policy Type                 Attachment Type
+	AdministratorAccess     AWS managed - job function          Directly
+
+-------------------------------------------------------------------------------------------------------------
+AWS env setup
+
+    poc-serverless-project
+    $ export AWS_ACCESS_KEY_ID=NA
+    $ export AWS_SECRET_ACCESS_KEY=NA
+    -------------OR-------------------
+    AWS Configuration
+    Configuring settings for the AWS CLI
+    https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-configure.html
+
+    [ec2-user@ip-172-31-6-170 ~]$ aws --version
+    aws-cli/2.33.15 Python/3.9.25 Linux/6.1.166-197.305.amzn2023.x86_64 source/x86_64.amzn.2023
+
+    [ec2-user@ip-172-31-6-170 ~]$ aws configure
+    AWS Access Key ID [None]: NA
+    AWS Secret Access Key [None]: NA
+    Default region name [None]: ap-south-1
+    Default output format [None]: 
+   
+    [ec2-user@ip-172-31-6-170 ~]$ ls -lhta
+    drwx------. 3 ec2-user ec2-user  39 Apr 16 16:54 .docker
+    drwxr-xr-x. 2 ec2-user ec2-user  39 Apr 16 14:30 .aws
+-------------------------------------------------------------------------------------------------------------
+Serverless 
+
+   $ serverless				||   serverless create --template aws-nodejs --path serverless-nodejs-project
+	Serverless ϟ Framework
+	Welcome to Serverless Framework V.4
+	Create a new project by selecting a Template to generate scaffolding for a specific use-case.
+	√ Select A Template: · AWS / Node.js / Express API
+	√ Name Your Project: · 
+	✔ Template Downloaded
+	Your new Service "serverless-nodejs-project" is ready. Here are next steps:
+	• Open Service Directory: cd serverless-nodejs-project
+	• Install Dependencies: npm install (or use another package manager)
+	• Deploy Your Service: serverless deploy
+
+    cd serverless-nodejs-project/
+    -rw-r--r-- 1 Moptra_IT 197121 2981 Aug  6  2025 README.md
+    -rw-r--r-- 1 Moptra_IT 197121  466 Aug  6  2025 handler.js
+    -rw-r--r-- 1 Moptra_IT 197121  167 Apr 28 06:08 package.json
+    -rw-r--r-- 1 Moptra_IT 197121  672 Apr 28 06:09 serverless.yml
+
+   Moptra_IT@serverless-nodejs-project
+   $ npm install
+	added 70 packages, and audited 71 packages in 9s
+
+   Moptra_IT@serverless-nodejs-project
+   $ serverless deploy
+	Deploying "serverless-nodejs-project" to stage "dev" (us-east-1)
+	✔ Service deployed to stack serverless-nodejs-project-dev (87s)
+	endpoint: ANY - https://iukbak3uue.execute-api.us-east-1.amazonaws.com
+	functions:
+  		api: serverless-nodejs-project-dev-api (1 MB)
+
+	Response
+		https://iukbak3uue.execute-api.us-east-1.amazonaws.com/
+		message:
+			"Hello from root!"
+	
+		https://iukbak3uue.execute-api.us-east-1.amazonaws.com/hello
+		message:
+			"Hello from path!"
+-----------------------------------------------------------------------------------------------------------------
+Using Serverless Framework with Express.js is one of the best ways to run an existing Node.js API on AWS Lambda with minimal changes.
+$ cat serverless.yml
+
+functions:
+  api:					#Lambda function named:	
+    handler: handler.handler		#File name = handler.js, Exported function = handler
+    events:
+      - httpApi: "*"				#Connect Lambda to HTTP API Gateway.
+
+
+$ cat handler.js
+
+#converts Express app into Lambda handler, Because Lambda doesn’t understand Express directly. 
+const serverless = require("serverless-http");  
+
+ #express = web framework      
+const express = require("express");	    
+const app = express();
+
+app.get("/", (req, res, next) => {
+  return res.status(200).json({
+    message: "Hello from root!",
+  });
+});
+
+app.get("/hello", (req, res, next) => {
+  return res.status(200).json({
+    message: "Hello from path!",
+  });
+});
+exports.handler = serverless(app);
+
+
+-------------------------------------------------------------------------------------------------------------
+Local Development: "serverless-offline" Lambda routes locally like API Gateway.
+
+Step 1: Install Plugin
+    npm install serverless-offline --save-dev
+
+Step 2: Update serverless.yml
+    plugins:
+  	- serverless-offline
+
+Moptra_IT@serverless-nodejs-project (main)
+$ serverless offline
+
+Starting Offline at stage dev (us-east-1)
+
+Offline [http for lambda] listening on http://localhost:3002
+Function names exposed for local invocation by aws-sdk:
+   * api: serverless-nodejs-project-dev-api
+
+   ┌───────────────────────────────────────────────────────────────────────                                                                     │
+   │   ANY  | http://localhost:3000/{default*}                             │
+   │   POST | http://localhost:3000/2015-03-31/functions/api/invocations   │
+   └───────────────────────────────────────────────────────────────────────┘
+
+Server ready: http://localhost:3000 🚀
+ANY / (λ: api)
+(λ: api) RequestId: 482c5840-5d25-4963-9c5b-62b77abd6561  Duration: 815.99 ms  Billed Duration: 816 ms
+
+ANY /health (λ: api)
+(λ: api) RequestId: ca2d44b3-4b9d-4939-8b94-7e5ced958b7e  Duration: 11.10 ms  Billed Duration: 12 ms
+
+-------------------------------------------------------------------------------------------------------------
+If Port 3000 Busy
+
+serverless offline --httpPort 4000.
+
+Recommendation for Real Development
+Code change
+↓
+serverless offline
+↓
+Test locally
+↓
+Deploy only after success
+-------------------------------------------------------------------------------------------------------------
+The app can also be set manually in serverless.yml via the app property:
+
+	service: my-service
+	app: my-app
+
+   Deploy a Service
+	serverless deploy
+
+   Developing
+	This allows you to make changes to your code, without having to deploy or recreate every aspect of your architecture locally, allowing you to develop rapidly.
+
+	serverless dev
+
+	Once you are finished with your dev session, you MUST re-deploy, using serverless deploy to push your recent local changes back to your live AWS Lambda functions
+
+   Invoking
+	To invoke your AWS Lambda function on the cloud, you can find URLs for your functions w/ API endpoints in the serverless deploy output, or retrieve them via serverless info.
+	
+	sls invoke -f hello
+
+	# Invoke and display logs:
+	serverless invoke -f hello --log
+
+   Deploy Functions
+	To deploy code changes quickly, you can skip the serverless deploy command which is much slower since it triggers a full AWS CloudFormation update, and deploy only code and configuration changes to a specific AWS Lambda function.
+
+	To deploy code and configuration changes to individual AWS Lambda functions in seconds, use the deploy function command, with -f [function name in serverless.yml] set to the function you want to deploy.
+
+	serverless deploy function -f my-api
+ 
+   Streaming logs
+	You can use Serverless Framework to stream logs from AWS Cloudwatch directly to your terminal. Use the sls logs command in a separate terminal window:
+
+	sls logs -f [Function name in serverless.yml] -t
+
+	Target a specific function via the -f option and enable tailing (i.e. streaming) via the -t option.
+
+   Full Local Development
+	If you do choose to develop locally, we recommend the following workflow...
+	Use the invoke local command to invoke your function locally:
+
+	sls invoke local -f my-api
+
+	Serverless Framework also has a great plugin that allows you to run a server locally and emulate AWS API Gateway. This is the serverless-offline command.
+		https://www.npmjs.com/package/serverless-offline
+
+   Remove Service
+	serverless remove
+-------------------------------------------------------------------------------------------------------------
+
+$ serverless deploy list
+
+2026-04-14 07:27:59 UTC
+Timestamp: 1776151679049
+Files:
+  - compiled-cloudformation-template.json
+  - poc-serverless-project.zip
+  - serverless-state.json
+-------------------------------------------------------------------------------------------------------------
+handler.js
+version.js
+serverless.yml
+
+And mapping works correctly:
+
+	Function	          File	        	  Export
+	hello	           	 handler.js	          hello
+	pversion	        version.js	       handler
+
+$ serverless invoke local --function hello
+{
+    "statusCode": 200,
+    "body": "{\"message\":\"Go Serverless v4! Your function executed successfully!\"}"
+}
+
+$ serverless invoke local --function pversion
+{
+    "statusCode": 200,
+    "body": "{\"version\":\"1.0.0\",\"message\":\"Version endpoint\"}"
+}
+-------------------------------------------------------------------------------------------------------------
+NodeJS Application
+
+$ cat handler.js
+const serverless = require("serverless-http");
+const app = require("./src/app");
+
+exports.handler = serverless(app);
+
+$ cat Dockerfile
+# Use AWS Lambda Node.js runtime base image
+FROM public.ecr.aws/lambda/nodejs:18
+
+# Set working directory
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+# Copy package files first
+COPY package*.json ./
+
+# Install production dependencies
+RUN npm install --omit=dev
+
+# Copy project files
+COPY . .
+
+# Expose handler.js Lambda entry point
+CMD [ "handler.handler" ]
+-------------------------------------------------------------------------------------------------------------
+
+AWS Lambda container image (public.ecr.aws/lambda/nodejs:18) with serverless-http, you can test it locally exactly like AWS Lambda does.
+
+✅ Step 1: Build Docker Image
+    From your project root:
+	
+	docker build -t serverless-nodejs-project .
+
+	[ec2-user@ip-172-31-3-175 serverless-nodejs-project]$ docker images
+	REPOSITORY                                                                TAG       IMAGE ID       CREATED       SIZE
+	serverless-nodejs-project                            latest    13192041f39b   2 hours ago   598MB
+
+
+✅ Step 2: Run Container Locally
+
+	[ec2-user@ip-172-31-3-175 serverless-nodejs-project]$ docker run -p 9000:8080 serverless-nodejs-project
+	29 Apr 2026 07:38:22,747 [INFO] (rapid) exec '/var/runtime/bootstrap' (cwd=/var/task, handler=)
+
+	Inside Lambda base image:
+		Port 8080 = Lambda Runtime API
+		We expose to local 9000
+
+✅ Step 3. Remove old containers
+	docker ps -a
+	docker rm -f $(docker ps -aq)
+
+✅ Step 4. Creating build with no-caching
+	docker build --no-cache -t serverless-nodejs-project .
+	docker run -p 9000:8080 serverless-nodejs-project
+
+✅ Step 5. Invoke Test
+	curl -XPOST http://localhost:9000/2015-03-31/functions/function/invocations -d '{}'
+
+✅ Step 6. Run Explicit Handler
+	docker run -p 9000:8080 serverless-nodejs-project handler.handler
+------------------------------------------------------------------------------------------------------
+
+[ec2-user@ip-172-31-3-175 serverless-nodejs-project]$ npm run dev [Required Only for Local]
+
+✔ Installed Serverless Framework v4.34.0
+✖ Error: You must sign in or use a license key with Serverless Framework V.4 and later versions. Please use "serverless login".
+
+    Create a Access Key
+	https://app.serverless.com/nabajyotiworkspace/settings/accessKeys
+		Access Key : AK8H7cvdKlQjsrLAIGoM3lSv9Ghtu1xbjesWxAgN852Uh
+
+	Note:
+	   Access Keys let your CLI authenticate with the Serverless Framework Dashboard, ideal for headless environments like CI/CD tools. Set an Access Key as an environment variable named SERVERLESS_ACCESS_KEY, eliminating the need to run serverless login.
+		
+	   export SERVERLESS_ACCESS_KEY=AK8H7cvdKlQjsrLAIGoM3lSv9Ghtu1xbjesWxAgN852Uh
+--------------------------------------------------------------------------------------------------
+
+[ec2-user@ip-172-31-3-175 serverless-nodejs-project]$ serverless login
+
+✔ What would you like to do? · Get A License/
+Opening the License Checkout page within the Serverless Framework Dashboard
+✔ What would you like to do? · Enter A License Key
+---------------------------------------------------------------------	
+
+Testing on EC2 Machine
+	[serverless-nodejs-project]$ export SERVERLESS_ACCESS_KEY=AK8H7cvdKlQjsrLAIGoM3lSv9Ghtu1xbjesWxAgN852Uh
+
+	[serverless-nodejs-project]$ npm run dev
+
+	Offline [http for lambda] listening on http://localhost:3002
+	   ┌───────────────────────────────────────────────────────────────────────┐
+   	│   ANY  | http://localhost:3000/{default*}                             │
+   	│  POST | http://localhost:3000/2015-03-31/functions/api/invocations   │
+  
+	Server ready: http://localhost:3000 🚀
+
+	
+	[ec2-user@ip-172-31-3-175 ~]$ curl http://localhost:3000/health
+	{"status":"UP","timestamp":"2026-04-29T08:27:37.567Z"}
+------------------------------------------------------------------------------------------------
+Local Development
+
+Moptra_IT@DESKTOP-D6D6SDF MINGW64 /c/Nabajyoti WorkSpace/POC/serverless-nodejs-project (main)
+$ npm run dev
+✖ Forbidden
+[nodemon] app crashed - waiting for file changes before starting...
+
+$  export SERVERLESS_ACCESS_KEY=AK8H7cvdKlQjsrLAIGoM3lSv9Ghtu1xbjesWxAgN852Uh
+
+Moptra_IT@DESKTOP-D6D6SDF MINGW64 /c/Nabajyoti WorkSpace/POC/serverless-nodejs-project (main)
+$ npm run dev
+   * api: serverless-nodejs-project-dev-api
+
+-----------------------------------------------------------------------------------------------
+$ serverless deploy --stage prod
+    Deploying "serverless-nodejs-project" to stage "prod" (ap-south-1)
+   
+    ✔ Service deployed to stack serverless-nodejs-project-prod (45s)
+    endpoint: ANY - https://ujmwmkg932.execute-api.ap-south-1.amazonaws.com
+
+$ serverless deploy
+    Deploying "serverless-nodejs-project" to stage "dev" (ap-south-1)
+
+    ✔ Service deployed to stack serverless-nodejs-project-dev (50s)
+    endpoint: ANY - https://wxptvnkusg.execute-api.ap-south-1.amazonaws.com
+
+    functions:
+  	api: serverless-nodejs-project-dev-api (3.8 MB)
+------------------------------------------------------
+
+Deploying AWS Lambda using serverless deploy (ZIP package) vs Amazon ECR images (container deployment) are two different packaging models. Both run on Lambda, but they differ in build process, limits, startup behavior, and operational style.
+
+Quick Summary
+Topic			Serverless Deploy (ZIP)			ECR Images (Container)
+Package Type		ZIP artifact				Docker image
+Max Size			50 MB zipped / 250 MB unzipped		Up to 10 GB
+Deploy Command		serverless deploy			Build image + push + update Lambda
+Best For			APIs, small/medium functions		Large apps, native deps, custom runtimes
+Runtime			AWS managed runtime			AWS base image or custom image
+Cold Start		Usually smaller/faster if slim		Can be slower if image is large
+DevOps Complexity	Lower					Higher
+Local Reproducibility	Moderate				Strong (same container locally/cloud)
+Native Binaries		Sometimes 				tricky	Easier
+Security Patching	Mostly runtime managed by AWS		You manage image updates
+
+1. serverless deploy (ZIP package)
+    Usually done with Serverless Framework.
+	
+	serverless deploy
+	✅ Simpler CI/CD
+	✅ Faster deployments for smaller codebases
+	✅ Less Docker overhead
+	✅ Easier for most Node.js apps
+
+    Limitations
+	⚠️ Package size limits
+	⚠️ Native libraries can be painful
+	⚠️ Harder to fully mirror prod locally
+
+2. ECR Image Deployment
+    You package the Lambda as a Docker image and push to Amazon ECR.
+
+    Dockerfile
+	FROM public.ecr.aws/lambda/nodejs:20
+	COPY . .
+	CMD ["handler.handler"]
+
+   Then:
+	docker build -t my-lambda .
+	docker tag my-lambda:latest <ecr-repo-uri>:latest
+	docker push <ecr-repo-uri>:latest
+
+	Lambda pulls the image.
+
+    Advantages
+	✅ Up to 10 GB image size
+	✅ Full control of environment
+	✅ Easier native dependencies
+	✅ Strong reproducibility
+
+     Limitations
+	⚠️ More DevOps steps
+	⚠️ Must maintain base image updates
+	⚠️ Large images can slow cold starts
+-----------------------------------------------------------------

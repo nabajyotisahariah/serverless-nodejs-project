@@ -1,0 +1,140 @@
+2026-04-30T07:16:46.619Z	undefined	ERROR	Uncaught Exception 	
+{
+    "errorType": "Error",
+    "errorMessage": "\nSomething went wrong installing the \"sharp\" module\n\nCannot find module '../build/Release/sharp-linux-x64.node'\nRequire stack:\n- /var/task/node_modules/sharp/lib/sharp.js\n- /var/task/node_modules/sharp/lib/constructor.js\n- /var/task/node_modules/sharp/lib/index.js\n- /var/task/src/services/image.service.js\n- /var/task/src/controllers/image.controller.js\n- /var/task/src/routes/image.routes.js\n- /var/task/src/app.js\n- /var/task/handler.js\n- /var/runtime/index.mjs\n\nPossible solutions:\n- Install with verbose logging and look for errors: \"npm install --ignore-scripts=false --foreground-scripts --verbose sharp\"\n- Install for the current linux-x64 runtime: \"npm install --platform=linux --arch=x64 sharp\"\n- Consult the installation documentation: https://sharp.pixelplumbing.com/install",
+    "stack": [
+        "Error: ",
+        "Something went wrong installing the \"sharp\" module",
+        "",
+        "Cannot find module '../build/Release/sharp-linux-x64.node'",
+        "Require stack:",
+        "- /var/task/node_modules/sharp/lib/sharp.js",
+        "- /var/task/node_modules/sharp/lib/constructor.js",
+        "- /var/task/node_modules/sharp/lib/index.js",
+        "- /var/task/src/services/image.service.js",
+        "- /var/task/src/controllers/image.controller.js",
+        "- /var/task/src/routes/image.routes.js",
+        "- /var/task/src/app.js",
+        "- /var/task/handler.js",
+        "- /var/runtime/index.mjs",
+        "",
+        "Possible solutions:",
+        "- Install with verbose logging and look for errors: \"npm install --ignore-scripts=false --foreground-scripts --verbose sharp\"",
+        "- Install for the current linux-x64 runtime: \"npm install --platform=linux --arch=x64 sharp\"",
+      
+
+
+✅ What’s actually happening
+    You installed sharp on your local machine (Windows/Mac), but AWS Lambda runs on Amazon Linux (linux-x64).
+
+So:
+    Your node_modules contains wrong native binaries
+    Lambda expects: sharp-linux-x64.node
+    But your build has: sharp-win32 or sharp-darwin
+
+🔥 Correct Fix (Production-safe)
+    ✅ Option 1: Install sharp for Lambda (recommended)
+
+    Run this inside a Linux environment:
+    rm -rf node_modules package-lock.json
+
+    npm install --platform=linux --arch=x64 sharp
+
+✅ Option 2: Use Docker (BEST practice)
+    Since you're already using Lambda + Docker, do this:
+
+    Dockerfile (correct version)
+    FROM public.ecr.aws/lambda/nodejs:18
+
+    WORKDIR ${LAMBDA_TASK_ROOT}
+
+    COPY package*.json ./
+
+    RUN npm install --omit=dev
+
+    COPY . .
+
+    CMD ["handler.handler"]
+
+👉 Then build inside Docker:
+
+    docker build -t lambda-sharp .
+
+    This ensures:
+
+    sharp is compiled for Amazon Linux
+    No binary mismatch
+
+✅ Option 3: Use Lambda Layer (cleanest for reuse)
+
+    Instead of bundling sharp in your app:
+    mkdir sharp-layer
+    cd sharp-layer
+
+    npm init -y
+    npm install sharp --platform=linux --arch=x64
+
+    Zip it:
+
+    zip -r sharp-layer.zip node_modules
+
+    Attach this layer to Lambda.
+
+    ⚠️ Important Gotchas
+    1. Node version mismatch
+
+        Ensure:
+            Lambda runtime = Node 18
+            Your build environment = Node 18
+
+    2. --ignore-scripts issue
+    If you ever ran:
+        npm install --ignore-scripts
+
+        👉 sharp will break because it needs postinstall scripts.
+
+        Fix:
+        npm install --ignore-scripts=false
+
+    3. Serverless Framework fix
+
+    If using Serverless:
+
+package:
+  excludeDevDependencies: true
+
+And add:
+
+custom:
+  webpack:
+    includeModules: true
+🧠 Best Practice (what I recommend for your setup)
+
+Since you're already doing:
+
+Lambda + Docker + Express
+
+👉 Use Docker build ONLY (Option 2)
+
+Why:
+
+Zero environment mismatch
+Works with ECR
+Production-grade
+🚀 Quick Debug Checklist
+ Did you build inside Linux/Docker?
+ Is node_modules copied from local? (❌ BAD)
+ Is Node version same as Lambda?
+ Did sharp install successfully (no warnings)?
+💡 If still failing
+
+Run inside container:
+
+docker run -it lambda-sharp sh
+
+Then:
+
+node -e "require('sharp')"
+
+If this fails → build issue
+If this works → deployment issue

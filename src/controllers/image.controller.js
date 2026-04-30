@@ -13,7 +13,7 @@ exports.uploadImage = async (req, res) => {
 
   try {
     console.log("Uploading and cropping image..2.",req.file); 
-    const result = await imageService.uploadAndCrop(req.file.buffer);
+    const result = await imageService.uploadAndCrop(req.file.originalname, req.file.buffer);
     return res.status(201).json(result);
   } catch (error) {
     console.error("Image upload failed:", error);
