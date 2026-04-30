@@ -10,3 +10,46 @@ You want:
     S3 (upload/)  ───►  Lambda (resize)  ───►  S3 (resized/)
 
 
+
+s3://s3-image-lambda-demo/resized/
+
+Upload file to S3:
+	aws s3 cp office.jpg s3://s3-image-lambda-demo/upload/office.jpg
+
+$ aws s3 cp office.jpg s3://s3-image-lambda-demo/upload/office.jpg
+upload: .\office.jpg to s3://s3-image-lambda-demo/upload/office.jpg
+
+Error
+/aws/lambda/serverless-nodejs-project-prod-imageProcessor
+026-04-30T11:27:57.223Z	3fe36554-14e3-48e5-8c5b-d250dec8faae	ERROR	Invoke Error 	
+{
+    "errorType": "ReferenceError",
+    "errorMessage": "S3 is not defined",
+    "stack": [
+        "ReferenceError: S3 is not defined",
+        "    at exports.s3Handler [as handler] (/var/task/handler.js:18:18)",
+        "    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1306:29)"
+    ]
+}
+
+Note:
+	Your Lambda is deployed, but S3 is NOT configured to trigger it
+	
+✅ How to Fix
+✅ Option 1 (Recommended): Manually attach trigger
+
+Go to AWS Console:
+
+Open S3 → bucket s3-image-lambda-demo
+Go to Properties
+Scroll to Event notifications
+Click Create event notification
+
+Fill:
+
+Name: image-upload-trigger
+Event types: ✅ PUT (ObjectCreated)
+Prefix: upload/
+Destination: Lambda function
+Select your deployed Lambda: serverless-nodejs-project-dev-imageProcessor
+-------------------------------------------------------
