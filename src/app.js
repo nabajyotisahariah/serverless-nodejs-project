@@ -3,9 +3,9 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
-// const connectDB = require("./config/db");
+//const connectDB = require("./config/db");
 
-// connectDB();
+//connectDB();
 
 app.use(express.json());
 

@@ -4,7 +4,8 @@
   "description": "A simple serverless Node.js project",
   "scripts": {
     "dev": "nodemon --watch . --ext js,yml,json --exec serverless offline",
-    "deploy": "serverless deploy"
+    "deploy": "serverless deploy",
+    "server": "node server.js"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
