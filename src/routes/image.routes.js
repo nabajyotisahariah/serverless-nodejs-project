@@ -2,12 +2,13 @@ const router = require("express").Router();
 const multer = require("multer");
 const controller = require("../controllers/image.controller");
 
+console.log("Image routes loaded...");
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 10 * 1024 * 1024, // 10 MB
   },
-  dest: "uploads/", // Temporary directory for multer to store files
+ // dest: "uploads/", // Temporary directory for multer to store files
 });
 
 //router.post("/upload", upload.single("image"), controller.uploadImage);

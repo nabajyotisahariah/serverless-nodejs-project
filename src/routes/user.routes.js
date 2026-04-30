@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const controller = require("../controllers/user.controller");
 
+console.log("User routes loaded...");
 router.get("/", controller.listUsers);
 // router.post("/", controller.createUser);
 // router.get("/:id", controller.getUser);

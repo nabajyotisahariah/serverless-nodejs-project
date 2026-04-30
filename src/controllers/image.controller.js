@@ -4,8 +4,9 @@ const imageService = require("../services/image.service");
 curl --location 'localhost:3000/images/upload' \
 --form 'image=@"/C:/Users/Moptra_IT/Desktop/office.jpg"'
 */
+console.log("Image controller loaded...");
 exports.uploadImage = async (req, res) => {
-     console.log("Uploading and cropping image..1.",req.file); 
+  console.log("Uploading and cropping image..1.",req.file); 
   if (!req.file || !req.file.buffer) {
     return res.status(400).json({ error: "Image file is required." });
   }

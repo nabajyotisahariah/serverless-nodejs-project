@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
+console.log("app.js loaded...");
 //const connectDB = require("./config/db");
 
 //connectDB();

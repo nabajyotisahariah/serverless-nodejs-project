@@ -1,11 +1,13 @@
 const sharp = require("sharp");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 
+//https://s3-image-lambda-demo.s3.ap-south-1.amazonaws.com/office.jpg
 const BUCKET = "s3-image-lambda-demo";
 const ORIGINAL_KEY = "office.jpg";
 const RESIZED_KEY_200 = "office-200.jpg";
 const RESIZED_KEY_400 = "office-400.jpg";
 
+console.log("Image service loaded...");
 const s3Client = new S3Client({
   region: process.env.AWS_REGION || "ap-south-1",
 });

@@ -1,6 +1,7 @@
 //const User = require('../models/user.model');
 
 exports.listUsers = async (req, res) => {
+  console.log("Listing users...");
   try {
     //const users = await User.find();
     const users = [{
