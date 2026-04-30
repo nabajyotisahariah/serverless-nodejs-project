@@ -16,6 +16,7 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
+        - s3:GetObject
         - s3:PutObject
       Resource: arn:aws:s3:::s3-image-lambda-demo/*
 
@@ -27,4 +28,12 @@ functions:
     handler: handler.handler
     events:
       - httpApi: "*"
-    
+  imageProcessor:
+    handler: handler.s3Handler
+    events:
+      - s3:
+          bucket: s3-image-lambda-demo
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: upload/
+          existing: true  
