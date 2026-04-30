@@ -26,7 +26,7 @@ exports.uploadAndCrop = async (originalName, buffer) => {
     console.log("uploadAndCrop...");
     const ext = path.extname(originalName);       // ".jpg"
     const name = path.basename(originalName, ext); // "photo.profile.image"
-    const originalUrl = await uploadToS3(name + ext, buffer, "image/jpeg");
+    const originalUrl = await uploadToS3("original/" + name + ext, buffer, "image/jpeg");
 
     const resized200 = await sharp(buffer)
         .resize(200, 200, { fit: "cover" })

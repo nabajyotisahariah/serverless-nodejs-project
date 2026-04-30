@@ -1,0 +1,9 @@
+curl --location 'https://ujmwmkg932.execute-api.ap-south-1.amazonaws.com/images/upload' \
+--form 'image=@"/C:/Users/Moptra_IT/Desktop/image/1-extent.jpg"'
+
+{
+    "error": "User: arn:aws:sts::167270712309:assumed-role/serverless-nodejs-project-prod-ap-south-1-lambdaRole
+    /serverless-nodejs-project-prod-api is not authorized to perform: 
+    s3:PutObject on resource: \"arn:aws:s3:::s3-image-lambda-demo/1-extent.jpg\"
+     because no identity-based policy allows the s3:PutObject action"
+}
