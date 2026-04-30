@@ -23,7 +23,7 @@ AWS Lambda
   Serverless ϟ Framework 4.34.0
 
   Genre SEVERLESS_ACCESS_KEY "https://app.serverless.com/nabajyotiworkspace/settings/accessKeys"
-  $  export SERVERLESS_ACCESS_KEY=AK8H7cvdKlQjsrLAIGoM3lSv9Ghtu1xbjesWxAgN852Uh 
+  $  export SERVERLESS_ACCESS_KEY=NA 
 -------------------------------------------------------------------------------------------------------------
 As of version 4, the Serverless Framework automatically updates 
    
@@ -339,12 +339,12 @@ AWS Lambda container image (public.ecr.aws/lambda/nodejs:18) with serverless-htt
 
     Create a Access Key
 	https://app.serverless.com/nabajyotiworkspace/settings/accessKeys
-		Access Key : AK8H7cvdKlQjsrLAIGoM3lSv9Ghtu1xbjesWxAgN852Uh
+		Access Key : NA
 
 	Note:
 	   Access Keys let your CLI authenticate with the Serverless Framework Dashboard, ideal for headless environments like CI/CD tools. Set an Access Key as an environment variable named SERVERLESS_ACCESS_KEY, eliminating the need to run serverless login.
 		
-	   export SERVERLESS_ACCESS_KEY=AK8H7cvdKlQjsrLAIGoM3lSv9Ghtu1xbjesWxAgN852Uh
+	   export SERVERLESS_ACCESS_KEY=NA
 --------------------------------------------------------------------------------------------------
 
 [ec2-user@ip-172-31-3-175 serverless-nodejs-project]$ serverless login
@@ -355,7 +355,7 @@ Opening the License Checkout page within the Serverless Framework Dashboard
 ---------------------------------------------------------------------	
 
 Testing on EC2 Machine
-	[serverless-nodejs-project]$ export SERVERLESS_ACCESS_KEY=AK8H7cvdKlQjsrLAIGoM3lSv9Ghtu1xbjesWxAgN852Uh
+	[serverless-nodejs-project]$ export SERVERLESS_ACCESS_KEY=NA
 
 	[serverless-nodejs-project]$ npm run dev
 
@@ -377,7 +377,7 @@ $ npm run dev
 ✖ Forbidden
 [nodemon] app crashed - waiting for file changes before starting...
 
-$  export SERVERLESS_ACCESS_KEY=AK8H7cvdKlQjsrLAIGoM3lSv9Ghtu1xbjesWxAgN852Uh
+$  export SERVERLESS_ACCESS_KEY=NA
 
 Moptra_IT@DESKTOP-D6D6SDF MINGW64 /c/Nabajyoti WorkSpace/POC/serverless-nodejs-project (main)
 $ npm run dev
