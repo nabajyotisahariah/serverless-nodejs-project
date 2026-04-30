@@ -25,7 +25,7 @@ plugins:
   
 functions:
   api:
-    handler: lambda-api.handler
+    handler: handler.handler
     events:
       - httpApi: "*"
 
