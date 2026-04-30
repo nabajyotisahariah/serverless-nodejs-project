@@ -4,7 +4,7 @@ WORKDIR ${LAMBDA_TASK_ROOT}
 
 COPY package*.json ./
 
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 COPY . .
 

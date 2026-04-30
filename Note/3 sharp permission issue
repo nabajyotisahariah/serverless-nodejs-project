@@ -7,3 +7,90 @@ curl --location 'https://ujmwmkg932.execute-api.ap-south-1.amazonaws.com/images/
     s3:PutObject on resource: \"arn:aws:s3:::s3-image-lambda-demo/1-extent.jpg\"
      because no identity-based policy allows the s3:PutObject action"
 }
+
+Resolution: [serverless.yml]
+provider:
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource: arn:aws:s3:::s3-image-lambda-demo/*
+
+------------------------------------------------------------------
+1. IAM Policy (identity-based)
+Attached to: User / Role / Lambda role
+Controls: “What this role can do” ✅ (your issue)
+2. Bucket Policy (resource-based)
+Attached to: S3 bucket
+Controls: “Who can access this bucket”
+
+👉 Your error explicitly says:
+
+no identity-based policy allows…
+
+So fixing bucket policy alone won’t solve it.
+
+✅ Fix (for your Lambda role)
+
+Attach this policy to your role:
+
+Role:
+
+serverless-nodejs-project-prod-ap-south-1-lambdaRole
+Minimal working policy:
+{
+  "Effect": "Allow",
+  "Action": "s3:PutObject",
+  "Resource": "arn:aws:s3:::s3-image-lambda-demo/original/*"
+}
+🔥 Recommended (for your image service)
+
+Since you're using image processing (sharp earlier), use this:
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "UploadImages",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::s3-image-lambda-demo/original/*"
+    },
+    {
+      "Sid": "ReadImages",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::s3-image-lambda-demo/*"
+    }
+  ]
+}
+⚠️ When do you need Bucket Policy?
+
+Only if:
+
+Cross-account access
+Public uploads
+Restricting access at bucket level
+Using signed URLs with strict conditions
+
+👉 For your case (Lambda in same account): IAM is enough
+
+🚀 Debug Checklist
+ Policy attached to correct role?
+ Role attached to Lambda?
+ Correct bucket name (s3-image-lambda-demo)?
+ Correct path (original/*)?
+💡 Pro Tip
+
+If you're deploying via Serverless Framework, add this:
+
+provider:
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource: arn:aws:s3:::s3-image-lambda-demo/original/*

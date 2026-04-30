@@ -1,0 +1,10 @@
+https://s3-image-lambda-demo.s3.amazonaws.com/resized/3-extent_400.jpg
+
+<?xml version="1.0" encoding="UTF-8"?>
+<Error>
+    <Code>AccessDenied</Code>
+    <Message>Access Denied</Message>
+    <RequestId>XPD5CZF8WTZJD6DZ</RequestId>
+    <HostId>gS+y5hWpwLSyashRj0JeS7QAFSH284iWZmYV5FG3Pl5tYEca5r96XNlp+unYS8PzYE4VMPcu0J40poLiYF6QhJXI4uA+ZSOB</HostId>
+</Error>
+
