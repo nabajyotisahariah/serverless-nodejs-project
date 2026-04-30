@@ -1,6 +1,12 @@
 const serverless = require("serverless-http");
 const app = require("./src/app");
 
+// ✅ ADD THESE LINES
+const AWS = require("aws-sdk");
+const S3 = new AWS.S3();
+const sharp = require("sharp");
+
+//App entry point
 exports.handler = serverless(app);
 
 // NEW: S3 Trigger Handler
