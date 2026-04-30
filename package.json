@@ -4,14 +4,19 @@
   "description": "A simple serverless Node.js project",
   "scripts": {
     "dev": "nodemon --watch . --ext js,yml,json --exec serverless offline",
-    "deploy": "serverless deploy",
-    "server": "node server.js"
+    "deploy:dev": "serverless deploy",
+    "deploy:prod": "serverless deploy --stage prod",
+    "server": "nodemon server.js",
+    "server:prod": "env=prod node server.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1039.0",
     "dotenv": "^17.4.2",
     "express": "^4.19.2",
     "mongoose": "^9.5.0",
-    "serverless-http": "^3.2.0"
+    "multer": "^1.4.5-lts.1",
+    "serverless-http": "^3.2.0",
+    "sharp": "^0.32.6"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",
